@@ -26,8 +26,11 @@ public class ProgramController {
     private ViewController viewController;  // diese Referenz soll auf ein Objekt der Klasse viewController zeigen. Über dieses Objekt wird das Fenster gesteuert.
     private Queue<QueueBall> ballQueue;
     private QueueBall lastBallinQueue;
+
     private Stack<StackSquare> squareStack;
     private StackSquare squareBeforeInStack;
+
+    private CurrentArrow currentArrow;
     private List<ListTriangle> triangleList;
     private ListTriangle previousListTriangle;
     private ListTriangle currentListTriangle;
@@ -53,11 +56,15 @@ public class ProgramController {
         // Für die Queue:
         ballQueue = new Queue<>();
         lastBallinQueue = null; // die letzte Kugel muss für die Animation gemerkt werden
+
         squareStack = new Stack<>();
         squareBeforeInStack = null;
+
         triangleList = new List<>();
         previousListTriangle = null;
         currentListTriangle = null;
+
+        currentArrow = new CurrentArrow(85,40, viewController, currentListTriangle);
     }
 
     public void addBallToQueue(){
@@ -91,14 +98,16 @@ public class ProgramController {
 
     }
 
-    public void addArrow(){
-        CurrentArrow newCurrentArrow = new CurrentArrow(150,60, viewController, currentListTriangle);
-    }
-
     public void addTriangle(){
-        ListTriangle newTriangleList = new ListTriangle(50,180, previousListTriangle, viewController);
-        triangleList.insert(newTriangleList);
+        if(currentListTriangle == null){
+            ListTriangle newTriangleList = new ListTriangle(50, 180, previousListTriangle, viewController);
+            triangleList.insert(newTriangleList);
             currentListTriangle = newTriangleList;
+        }else{
+            ListTriangle newTriangleList = new ListTriangle(110 + currentListTriangle.getX(), 180, previousListTriangle, viewController);
+            triangleList.insert(newTriangleList);
+            currentListTriangle = newTriangleList;
+        }
     }
 
     public void deleteTriangle(){
@@ -107,8 +116,12 @@ public class ProgramController {
         }
     }
 
-    public void setCurrentArrow(){
+    public void moveCurrentArrowtoRight(){
+        currentArrow.setX(currentArrow.getX()+110);
+    }
 
+    public void moveCurrentArrowtoLeft(){
+        currentArrow.setX(currentArrow.getX()-110);
     }
 
     /**

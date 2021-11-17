@@ -21,11 +21,7 @@ public class ListTriangle extends GraphicalObject {
 
     @Override
     public void draw(DrawTool drawTool){
-        drawTool.drawPolygon(x,y,x+90,y,x+45,y-70);
+        drawTool.drawPolygon(x,y,x+80,y,x+40,y-80);
     }
 
-    @Override
-    public void update(double dt){
-
-    }
 }
