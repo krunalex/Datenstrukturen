@@ -1,8 +1,11 @@
 package my_project.control;
 
 import KAGO_framework.control.ViewController;
+import KAGO_framework.model.abitur.datenstrukturen.List;
 import KAGO_framework.model.abitur.datenstrukturen.Queue;
 import KAGO_framework.model.abitur.datenstrukturen.Stack;
+import my_project.model.CurrentArrow;
+import my_project.model.ListTriangle;
 import my_project.model.QueueBall;
 import my_project.model.StackSquare;
 import my_project.view.InputReceiver;
@@ -25,6 +28,9 @@ public class ProgramController {
     private QueueBall lastBallinQueue;
     private Stack<StackSquare> squareStack;
     private StackSquare squareBeforeInStack;
+    private List<ListTriangle> triangleList;
+    private ListTriangle previousListTriangle;
+    private ListTriangle currentListTriangle;
 
     /**
      * Konstruktor
@@ -49,6 +55,9 @@ public class ProgramController {
         lastBallinQueue = null; // die letzte Kugel muss für die Animation gemerkt werden
         squareStack = new Stack<>();
         squareBeforeInStack = null;
+        triangleList = new List<>();
+        previousListTriangle = null;
+        currentListTriangle = null;
     }
 
     public void addBallToQueue(){
@@ -77,6 +86,31 @@ public class ProgramController {
             }
         }
     }
+
+    public void getPreviousTriangle(){
+
+    }
+
+    public void addArrow(){
+        CurrentArrow newCurrentArrow = new CurrentArrow(150,60, viewController, currentListTriangle);
+    }
+
+    public void addTriangle(){
+        ListTriangle newTriangleList = new ListTriangle(50,180, previousListTriangle, viewController);
+        triangleList.insert(newTriangleList);
+            currentListTriangle = newTriangleList;
+    }
+
+    public void deleteTriangle(){
+        if(!triangleList.isEmpty()){
+            triangleList.remove();
+        }
+    }
+
+    public void setCurrentArrow(){
+
+    }
+
     /**
      * Aufruf bei Mausklick
      * @param e das Objekt enthält alle Informationen zum Klick

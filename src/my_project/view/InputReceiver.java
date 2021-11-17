@@ -3,6 +3,8 @@ package my_project.view;
 import KAGO_framework.control.Interactable;
 import KAGO_framework.control.ViewController;
 import my_project.control.ProgramController;
+
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 /**
@@ -27,26 +29,26 @@ public class InputReceiver implements Interactable {
 
     @Override
     public void keyPressed(int key) {
-
     }
 
     @Override
     public void keyReleased(int key) {
+        if(key == KeyEvent.VK_SPACE){
+            programController.addTriangle();
+            programController.addArrow();
+        }
+        if(key == KeyEvent.VK_D){
+            // Bewege Pfeil nach rechts
+        }
+        if(key == KeyEvent.VK_A){
+            programController.deleteTriangle();
+        }
 
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-       /* if(e.getButton() == MouseEvent.BUTTON1){ // falls die linke Maustaste geklickt wurde...
-            programController.addBallToQueue();
-        } else { // falls eine andere Maustaste geklickt wurde
-            programController.deleteBallFromQueue();
-        } */
-        if(e.getButton() == MouseEvent.BUTTON1){ // falls die linke Maustaste geklickt wurde...
-            programController.addSquare();
-        } else { // falls eine andere Maustaste geklickt wurde
-            programController.deleteSquare();
-        }
+
     }
 
     @Override
