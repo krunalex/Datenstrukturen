@@ -46,7 +46,6 @@ public class InputReceiver implements Interactable {
         if(key == KeyEvent.VK_BACK_SPACE){
             programController.deleteTriangle();
         }
-
     }
 
     @Override

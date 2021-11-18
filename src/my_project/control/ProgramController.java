@@ -32,8 +32,11 @@ public class ProgramController {
 
     private CurrentArrow currentArrow;
     private List<ListTriangle> triangleList;
+
     private ListTriangle previousListTriangle;
     private ListTriangle currentListTriangle;
+
+    private int triangleCounter;
 
     /**
      * Konstruktor
@@ -64,7 +67,6 @@ public class ProgramController {
         previousListTriangle = null;
         currentListTriangle = null;
 
-        currentArrow = new CurrentArrow(85,40, viewController, currentListTriangle);
     }
 
     public void addBallToQueue(){
@@ -94,26 +96,58 @@ public class ProgramController {
         }
     }
 
-    public void getPreviousTriangle(){
+    public void addTriangle(){
+        if (triangleCounter < 13){
+            ListTriangle oneTriangle;
+            if(currentListTriangle == null){
+                oneTriangle = new ListTriangle(50, 180, previousListTriangle, viewController);
+            }else{
+                oneTriangle = new ListTriangle(110 + currentListTriangle.getX(), 180, previousListTriangle, viewController);
+            }
+            triangleList.append(oneTriangle);
+            currentListTriangle = oneTriangle;
+        }
+        triangleCounter++;
+        if (triangleCounter == 1) currentArrow = new CurrentArrow(85,40, viewController, currentListTriangle);
 
+        System.out.println();
     }
 
-    public void addTriangle(){
-        if(currentListTriangle == null){
-            ListTriangle newTriangleList = new ListTriangle(50, 180, previousListTriangle, viewController);
-            triangleList.insert(newTriangleList);
-            currentListTriangle = newTriangleList;
-        }else{
-            ListTriangle newTriangleList = new ListTriangle(110 + currentListTriangle.getX(), 180, previousListTriangle, viewController);
-            triangleList.insert(newTriangleList);
-            currentListTriangle = newTriangleList;
+    private void rearrangeList(){
+        // Aktuelle Position des Current-Zeigers merken
+        ListTriangle currentTriangle = triangleList.getContent();
+        // Die Liste abgehen und alle Objekte passend platzieren
+        triangleList.toFirst();
+        int index = 0;
+        while(triangleList.hasAccess()){
+            triangleList.getContent().setX(50+110*index);
+            triangleList.getContent().setY(180);
+            triangleList.next();
+            index++;
         }
+        // Current Zeiger wieder zurück setzen
+        triangleList.toFirst();
+        while(triangleList.getContent() != currentTriangle) triangleList.next();
     }
 
     public void deleteTriangle(){
         if(!triangleList.isEmpty()){
+            System.out.println(previousListTriangle);
+            viewController.removeDrawable(currentListTriangle);
+            currentListTriangle = previousListTriangle;
+            triangleCounter--;
             triangleList.remove();
         }
+    }
+
+    public void getPrevious(){
+        if(!triangleList.isEmpty()){
+
+        }
+    }
+
+    public void changeTriangle(){
+        // TODO: Der soll noch irgendwas machen
     }
 
     public void moveCurrentArrowtoRight(){
