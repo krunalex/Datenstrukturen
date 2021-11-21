@@ -333,10 +333,10 @@ public class List<ContentType> {
    *         der Liste ist
    */
   private ListNode getPrevious(ListNode pNode) {
-    if (pNode != null && pNode != first && !this.isEmpty()) {
+    if(pNode != null && pNode != first && !this.isEmpty()) {
       ListNode temp = first;
       while (temp != null && temp.getNextNode() != pNode) {
-        temp = temp.getNextNode();
+          temp = temp.getNextNode();
       }
       return temp;
     } else {

@@ -38,9 +38,6 @@ public class StackSquare extends GraphicalObject {
         }
         if(removed){
             x -= 100*dt;
-            /*if(x < -100){
-                viewController.removeDrawable(this);
-            } */
         }
     }
 

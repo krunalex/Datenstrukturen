@@ -37,14 +37,19 @@ public class InputReceiver implements Interactable {
         if(key == KeyEvent.VK_SPACE){
             programController.addTriangle();
         }
-        if(key == KeyEvent.VK_A){
-            programController.moveCurrentArrowtoLeft();
-        }
-        if(key == KeyEvent.VK_D){
-            programController.moveCurrentArrowtoRight();
-        }
         if(key == KeyEvent.VK_BACK_SPACE){
             programController.deleteTriangle();
+            programController.rearrangeList();
+            programController.moveCurrentArrowtoRight();
+        }
+        if (key == KeyEvent.VK_D){
+            programController.moveCurrentArrowtoRight();
+        }
+        if (key == KeyEvent.VK_G){
+            programController.changeTriangle();
+        }
+        if (key == KeyEvent.VK_H){
+            programController.changeBack();
         }
     }
 

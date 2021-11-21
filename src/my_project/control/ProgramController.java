@@ -10,6 +10,7 @@ import my_project.model.QueueBall;
 import my_project.model.StackSquare;
 import my_project.view.InputReceiver;
 
+import javax.sound.midi.SysexMessage;
 import java.awt.event.MouseEvent;
 //import java.util.Stack;
 
@@ -43,9 +44,10 @@ public class ProgramController {
      * Dieser legt das Objekt der Klasse ProgramController an, das den Programmfluss steuert.
      * Damit der ProgramController auf das Fenster zugreifen kann, benötigt er eine Referenz auf das Objekt
      * der Klasse viewController. Diese wird als Parameter übergeben.
+     *
      * @param viewController das viewController-Objekt des Programms
      */
-    public ProgramController(ViewController viewController){
+    public ProgramController(ViewController viewController) {
         this.viewController = viewController;
     }
 
@@ -55,10 +57,10 @@ public class ProgramController {
      */
     public void startProgram() {
         // Für Benutzerinteraktion
-        new InputReceiver(this,viewController); // darf anonym sein, weil kein Zugriff nötig ist
+        new InputReceiver(this, viewController); // darf anonym sein, weil kein Zugriff nötig ist
         // Für die Queue:
         ballQueue = new Queue<>();
-        lastBallinQueue = null; // die letzte Kugel muss für die Animation gemerkt werden
+        lastBallinQueue = null;
 
         squareStack = new Stack<>();
         squareBeforeInStack = null;
@@ -69,93 +71,110 @@ public class ProgramController {
 
     }
 
-    public void addBallToQueue(){
-        QueueBall newQueueBall = new QueueBall(650,50,lastBallinQueue,viewController);
+    public void addBallToQueue() {
+        QueueBall newQueueBall = new QueueBall(650, 50, lastBallinQueue, viewController);
         ballQueue.enqueue(newQueueBall);
         lastBallinQueue = newQueueBall;
     }
 
-    public void deleteBallFromQueue(){
-        if(!ballQueue.isEmpty()){
-            if(ballQueue.front().tryToDelete()) ballQueue.dequeue();
+    public void deleteBallFromQueue() {
+        if (!ballQueue.isEmpty()) {
+            if (ballQueue.front().tryToDelete()) ballQueue.dequeue();
         }
     }
 
-    public void addSquare(){
-        StackSquare newStackSquare = new StackSquare(400,100, squareBeforeInStack, viewController);
+    public void addSquare() {
+        StackSquare newStackSquare = new StackSquare(400, 100, squareBeforeInStack, viewController);
         squareStack.push(newStackSquare);
-            squareBeforeInStack = newStackSquare;
+        squareBeforeInStack = newStackSquare;
 
     }
 
-    public void deleteSquare(){
-        if(!squareStack.isEmpty()){
-            if(squareStack.top().isDeletable()){
+    public void deleteSquare() {
+        if (!squareStack.isEmpty()) {
+            if (squareStack.top().isDeletable()) {
                 squareStack.pop();
             }
         }
     }
 
-    public void addTriangle(){
-        if (triangleCounter < 13){
+    public void addTriangle() {
+        if (triangleCounter < 13) {
             ListTriangle oneTriangle;
-            if(currentListTriangle == null){
-                oneTriangle = new ListTriangle(50, 180, previousListTriangle, viewController);
-            }else{
-                oneTriangle = new ListTriangle(110 + currentListTriangle.getX(), 180, previousListTriangle, viewController);
+            triangleList.toLast();
+            currentListTriangle = triangleList.getContent();
+            if (currentListTriangle == null) {
+                oneTriangle = new ListTriangle(50, 180, 0, 0, 0, viewController);
+                triangleList.toFirst();
+            } else {
+                oneTriangle = new ListTriangle(110 + currentListTriangle.getX(), 180, 0, 0 ,0, viewController);
+                triangleList.next();
             }
-            triangleList.append(oneTriangle);
             currentListTriangle = oneTriangle;
+            triangleList.append(oneTriangle);
         }
         triangleCounter++;
-        if (triangleCounter == 1) currentArrow = new CurrentArrow(85,40, viewController, currentListTriangle);
-
-        System.out.println();
+        if (triangleCounter == 1) currentArrow = new CurrentArrow(85, 40, viewController, currentListTriangle);
+        if (currentArrow.getX() != currentListTriangle.getX()) currentArrow.setX(currentListTriangle.getX()+35);
     }
 
-    private void rearrangeList(){
+    public ListTriangle getPreviousTriangle(){
+        triangleList.toFirst();
+        ListTriangle tempCurrent;
+        while(triangleList.hasAccess()){
+            tempCurrent = triangleList.getContent();
+            triangleList.next();
+            if(triangleList.hasAccess()){
+                if(triangleList.getContent().equals(currentListTriangle)) {
+                    return tempCurrent;
+                }
+            }
+        }
+        return null;
+    }
+
+    public void rearrangeList() {
         // Aktuelle Position des Current-Zeigers merken
         ListTriangle currentTriangle = triangleList.getContent();
         // Die Liste abgehen und alle Objekte passend platzieren
         triangleList.toFirst();
         int index = 0;
-        while(triangleList.hasAccess()){
-            triangleList.getContent().setX(50+110*index);
+        while (triangleList.hasAccess()) {
+            triangleList.getContent().setX(50 + 110 * index);
             triangleList.getContent().setY(180);
             triangleList.next();
             index++;
         }
         // Current Zeiger wieder zurück setzen
         triangleList.toFirst();
-        while(triangleList.getContent() != currentTriangle) triangleList.next();
+            while (triangleList.getContent() != currentTriangle) triangleList.next();
     }
 
-    public void deleteTriangle(){
-        if(!triangleList.isEmpty()){
-            System.out.println(previousListTriangle);
-            viewController.removeDrawable(currentListTriangle);
-            currentListTriangle = previousListTriangle;
-            triangleCounter--;
+
+    public void deleteTriangle() {
+        if (!triangleList.isEmpty() && triangleCounter != 0) {
             triangleList.remove();
+            viewController.removeDrawable(currentListTriangle);
+            currentListTriangle = getPreviousTriangle();
+            triangleCounter--;
         }
     }
 
-    public void getPrevious(){
-        if(!triangleList.isEmpty()){
-
+    public void moveCurrentArrowtoRight() {
+        triangleList.next();
+        if(!triangleList.hasAccess()){
+            triangleList.toFirst();
         }
+        currentListTriangle = triangleList.getContent();
+        currentArrow.setX(currentListTriangle.getX()+35);
     }
 
     public void changeTriangle(){
-        // TODO: Der soll noch irgendwas machen
+        currentListTriangle.setB(255);
     }
 
-    public void moveCurrentArrowtoRight(){
-        currentArrow.setX(currentArrow.getX()+110);
-    }
-
-    public void moveCurrentArrowtoLeft(){
-        currentArrow.setX(currentArrow.getX()-110);
+    public void changeBack(){
+        currentListTriangle.setB(0);
     }
 
     /**
