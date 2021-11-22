@@ -66,7 +66,7 @@ public class ProgramController {
         squareBeforeInStack = null;
 
         triangleList = new List<>();
-        previousListTriangle = null;
+        previousListTriangle = getPreviousTriangle();
         currentListTriangle = null;
 
     }
