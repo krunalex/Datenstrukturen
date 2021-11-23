@@ -4,10 +4,7 @@ import KAGO_framework.control.ViewController;
 import KAGO_framework.model.abitur.datenstrukturen.List;
 import KAGO_framework.model.abitur.datenstrukturen.Queue;
 import KAGO_framework.model.abitur.datenstrukturen.Stack;
-import my_project.model.CurrentArrow;
-import my_project.model.ListTriangle;
-import my_project.model.QueueBall;
-import my_project.model.StackSquare;
+import my_project.model.*;
 import my_project.view.InputReceiver;
 
 import javax.sound.midi.SysexMessage;
@@ -33,11 +30,11 @@ public class ProgramController {
 
     private CurrentArrow currentArrow;
     private List<ListTriangle> triangleList;
-
     private ListTriangle previousListTriangle;
     private ListTriangle currentListTriangle;
-
     private int triangleCounter;
+
+    private SquareArray squareArray;
 
     /**
      * Konstruktor
@@ -68,7 +65,6 @@ public class ProgramController {
         triangleList = new List<>();
         previousListTriangle = getPreviousTriangle();
         currentListTriangle = null;
-
     }
 
     public void addBallToQueue() {
@@ -157,6 +153,9 @@ public class ProgramController {
             viewController.removeDrawable(currentListTriangle);
             currentListTriangle = getPreviousTriangle();
             triangleCounter--;
+            if(triangleCounter == 0){
+                viewController.removeDrawable(currentArrow);
+            }
         }
     }
 
