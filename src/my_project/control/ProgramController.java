@@ -4,10 +4,15 @@ import KAGO_framework.control.ViewController;
 import KAGO_framework.model.abitur.datenstrukturen.List;
 import KAGO_framework.model.abitur.datenstrukturen.Queue;
 import KAGO_framework.model.abitur.datenstrukturen.Stack;
-import my_project.model.*;
+import my_project.model.array.ArrayCircle;
+import my_project.model.array.ArrayCurrent;
+import my_project.model.array.ArrayField;
+import my_project.model.list.CurrentArrow;
+import my_project.model.list.ListTriangle;
+import my_project.model.queue.QueueBall;
+import my_project.model.stack.StackSquare;
 import my_project.view.InputReceiver;
 
-import javax.sound.midi.SysexMessage;
 import java.awt.event.MouseEvent;
 //import java.util.Stack;
 
@@ -34,7 +39,11 @@ public class ProgramController {
     private ListTriangle currentListTriangle;
     private int triangleCounter;
 
-    private SquareArray squareArray;
+    private ArrayCircle[][] arrayCircle;
+    private ArrayCircle arrayCircleObj;
+    private ArrayCurrent[][] arrayCurrent;
+    private ArrayCurrent arrayCurrentObj;
+    private ArrayField arrayField;
 
     /**
      * Konstruktor
@@ -65,6 +74,96 @@ public class ProgramController {
         triangleList = new List<>();
         previousListTriangle = getPreviousTriangle();
         currentListTriangle = null;
+
+        arrayCircle = new ArrayCircle[4][8];
+        arrayCurrent = new ArrayCurrent[4][8];
+        arrayField = new ArrayField(130,100,viewController);
+        arrayCurrentObj = new ArrayCurrent(130,100,viewController);
+
+    }
+
+    public void insertArray(){
+        if(arrayCircle[0][0] == null){
+            for (int x = 0; x < arrayCircle.length; x++){
+                for (int y = 0; y < arrayCircle[0].length; y++){
+                    arrayCircle[x][y] = new ArrayCircle(130 + (x * 40) + 15, 100 + (y * 40) + 15, viewController, 0,0,255);
+                }
+            }
+        }
+    }
+
+    public void deleteArray(){
+        for (int x = 0; x < arrayCircle.length; x++){
+            for (int y = 0; y < arrayCircle[0].length; y++){
+                viewController.removeDrawable(arrayCircle[x][y]);
+                arrayCircle[x][y] = null;
+            }
+        }
+    }
+
+    public void deleteCircleObj(){
+        for(int i = 0; i < arrayCircle.length; i++){
+            for (int j = 0; j < arrayCircle[0].length; j++){
+                if(arrayCircle[i][j] != null){
+                    if(arrayCurrentObj.getX()+15 == arrayCircle[i][j].getX()){
+                        if(arrayCurrentObj.getY()+15 == arrayCircle[i][j].getY()){
+                            arrayCircle[i][j].delete();
+                            arrayCircle[i][j] = null;
+                        }
+                    }
+                }else{
+                    return; // Break is sus ඞ
+                }
+            }
+        }
+    }
+
+    public void insertCircleObj(){
+        for(int i = 0; i < arrayCircle.length; i++){
+            for (int j = 0; j < arrayCircle[0].length; j++){
+                if(arrayCircle[i][j] == null){
+                    arrayCircle[i][j] = new ArrayCircle( ( (int) arrayCurrentObj.getX()) + 15, ( (int) arrayCurrentObj.getY()) + 15, viewController,0,0,255);
+                }
+            }
+        }
+    }
+
+    public void changeArrayObj(){
+        for(int i = 0; i < arrayCircle.length; i++){
+            for (int j = 0; j < arrayCircle[0].length; j++){
+                if(arrayCircle[i][j] != null){
+                    if(arrayCurrentObj.getX()+15 == arrayCircle[i][j].getX()) {
+                        if(arrayCurrentObj.getY()+15 == arrayCircle[i][j].getY()){
+                            arrayCircle[i][j].setR(255);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void arrayCurrentRight(){
+        if(arrayCurrentObj.getX() != 250){
+            arrayCurrentObj.setX(arrayCurrentObj.getX()+40);
+        }
+    }
+
+    public void arrayCurrentLeft(){
+        if(arrayCurrentObj.getX() != 130){
+            arrayCurrentObj.setX(arrayCurrentObj.getX()-40);
+        }
+    }
+
+    public void arrayCurrentUp(){
+        if(arrayCurrentObj.getY() != 100){
+            arrayCurrentObj.setY(arrayCurrentObj.getY() - 40);
+        }
+    }
+
+    public void arrayCurrentDown(){
+        if(arrayCurrentObj.getY() != 380){
+            arrayCurrentObj.setY(arrayCurrentObj.getY()+40);
+        }
     }
 
     public void addBallToQueue() {
@@ -174,6 +273,21 @@ public class ProgramController {
 
     public void changeBack(){
         currentListTriangle.setB(0);
+    }
+
+    public void squareArrayRight() {
+    }
+
+    public void squareArrayLeft() {
+
+    }
+
+    public void squareArrayUp() {
+
+    }
+
+    public void squareArrayDown() {
+
     }
 
     /**

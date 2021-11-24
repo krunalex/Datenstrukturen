@@ -1,21 +1,19 @@
-package my_project.model;
+package my_project.model.array;
 
 import KAGO_framework.control.ViewController;
 import KAGO_framework.model.GraphicalObject;
-import KAGO_framework.model.abitur.datenstrukturen.List;
 import KAGO_framework.view.DrawTool;
 
 import java.awt.*;
 
-public class ListTriangle extends GraphicalObject {
+public class ArrayCircle extends GraphicalObject {
 
     private ViewController viewController;
     private int r;
     private int g;
     private int b;
 
-
-    public ListTriangle(double x, double y, int r, int g, int b,  ViewController viewController){
+    public ArrayCircle(int x, int y, ViewController viewController, int r, int g, int b){
         this.x = x;
         this.y = y;
         this.r = r;
@@ -28,10 +26,15 @@ public class ListTriangle extends GraphicalObject {
     @Override
     public void draw(DrawTool drawTool){
         drawTool.setCurrentColor(r,g,b,255);
-        drawTool.drawFilledPolygon(x,y,x+80,y,x+40,y-80);
+        drawTool.drawFilledCircle(x,y,5);
     }
 
-    public void setB(int b) {
-        this.b = b;
+    public void setR(int r) {
+        this.r = r;
     }
+
+    public void delete(){
+        viewController.removeDrawable(this);
+    }
+
 }

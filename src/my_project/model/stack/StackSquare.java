@@ -1,4 +1,4 @@
-package my_project.model;
+package my_project.model.stack;
 
 import KAGO_framework.control.ViewController;
 import KAGO_framework.model.GraphicalObject;
