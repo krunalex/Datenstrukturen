@@ -5,7 +5,7 @@ import KAGO_framework.model.abitur.datenstrukturen.List;
 import KAGO_framework.model.abitur.datenstrukturen.Queue;
 import KAGO_framework.model.abitur.datenstrukturen.Stack;
 import my_project.model.array.ArrayCircle;
-import my_project.model.array.ArrayCurrent;
+import my_project.model.array.ArrayMarker;
 import my_project.model.array.ArrayField;
 import my_project.model.list.CurrentArrow;
 import my_project.model.list.ListTriangle;
@@ -14,7 +14,7 @@ import my_project.model.stack.StackSquare;
 import my_project.view.InputReceiver;
 
 import java.awt.event.MouseEvent;
-//import java.util.Stack;
+
 
 /**
  * Ein Objekt der Klasse ProgramController dient dazu das Programm zu steuern. Die updateProgram - Methode wird
@@ -39,10 +39,10 @@ public class ProgramController {
     private ListTriangle currentListTriangle;
     private int triangleCounter;
 
-    private ArrayCircle[][] arrayCircle;
+    private ArrayCircle[][] circleArray;
     private ArrayCircle arrayCircleObj;
-    private ArrayCurrent[][] arrayCurrent;
-    private ArrayCurrent arrayCurrentObj;
+
+    private ArrayMarker arrayMarker;
     private ArrayField arrayField;
 
     /**
@@ -75,94 +75,71 @@ public class ProgramController {
         previousListTriangle = getPreviousTriangle();
         currentListTriangle = null;
 
-        arrayCircle = new ArrayCircle[4][8];
-        arrayCurrent = new ArrayCurrent[4][8];
+        circleArray = new ArrayCircle[4][8];
         arrayField = new ArrayField(130,100,viewController);
-        arrayCurrentObj = new ArrayCurrent(130,100,viewController);
+        arrayMarker = new ArrayMarker(viewController);
 
     }
 
-    public void insertArray(){
-        if(arrayCircle[0][0] == null){
-            for (int x = 0; x < arrayCircle.length; x++){
-                for (int y = 0; y < arrayCircle[0].length; y++){
-                    arrayCircle[x][y] = new ArrayCircle(130 + (x * 40) + 15, 100 + (y * 40) + 15, viewController, 0,0,255);
+    public void fillArray(){
+        if(circleArray[0][0] == null){
+            for (int x = 0; x < circleArray.length; x++){
+                for (int y = 0; y < circleArray[0].length; y++){
+                    circleArray[x][y] = new ArrayCircle(130 + (x * 40) + 15, 100 + (y * 40) + 15, viewController, 0,0,255);
                 }
             }
         }
     }
 
-    public void deleteArray(){
-        for (int x = 0; x < arrayCircle.length; x++){
-            for (int y = 0; y < arrayCircle[0].length; y++){
-                viewController.removeDrawable(arrayCircle[x][y]);
-                arrayCircle[x][y] = null;
+    public void deleteAllArrayObjects(){
+        for (int x = 0; x < circleArray.length; x++){
+            for (int y = 0; y < circleArray[0].length; y++){
+                viewController.removeDrawable(circleArray[x][y]);
+                circleArray[x][y] = null;
             }
         }
     }
 
-    public void deleteCircleObj(){
-        for(int i = 0; i < arrayCircle.length; i++){
-            for (int j = 0; j < arrayCircle[0].length; j++){
-                if(arrayCircle[i][j] != null){
-                    if(arrayCurrentObj.getX()+15 == arrayCircle[i][j].getX()){
-                        if(arrayCurrentObj.getY()+15 == arrayCircle[i][j].getY()){
-                            arrayCircle[i][j].delete();
-                            arrayCircle[i][j] = null;
-                        }
-                    }
-                }else{
-                    return; // Break is sus ඞ
-                }
-            }
+    public void deleteArrayObj(){
+        if(circleArray[arrayMarker.getI()][arrayMarker.getJ()] != null){
+            circleArray[arrayMarker.getI()][arrayMarker.getJ()].delete();
+            circleArray[arrayMarker.getI()][arrayMarker.getJ()] = null;
         }
     }
 
-    public void insertCircleObj(){
-        for(int i = 0; i < arrayCircle.length; i++){
-            for (int j = 0; j < arrayCircle[0].length; j++){
-                if(arrayCircle[i][j] == null){
-                    arrayCircle[i][j] = new ArrayCircle( ( (int) arrayCurrentObj.getX()) + 15, ( (int) arrayCurrentObj.getY()) + 15, viewController,0,0,255);
-                }
-            }
+    public void insertArrayObj(){
+        if(circleArray[arrayMarker.getI()][arrayMarker.getJ()] == null){
+            circleArray[arrayMarker.getI()][arrayMarker.getJ()] = new ArrayCircle( ( (int) arrayMarker.getX()) + 15, ( (int) arrayMarker.getY()) + 15, viewController,0,0,255);
         }
     }
 
     public void changeArrayObj(){
-        for(int i = 0; i < arrayCircle.length; i++){
-            for (int j = 0; j < arrayCircle[0].length; j++){
-                if(arrayCircle[i][j] != null){
-                    if(arrayCurrentObj.getX()+15 == arrayCircle[i][j].getX()) {
-                        if(arrayCurrentObj.getY()+15 == arrayCircle[i][j].getY()){
-                            arrayCircle[i][j].setR(255);
-                        }
-                    }
-                }
-            }
+         if(circleArray[arrayMarker.getI()][arrayMarker.getJ()] != null){
+             circleArray[arrayMarker.getI()][arrayMarker.getJ()].setR(255);
         }
     }
 
     public void arrayCurrentRight(){
-        if(arrayCurrentObj.getX() != 250){
-            arrayCurrentObj.setX(arrayCurrentObj.getX()+40);
+        if(arrayMarker.getI() < circleArray.length-1){
+            arrayMarker.setI(arrayMarker.getI()+1);
         }
     }
 
     public void arrayCurrentLeft(){
-        if(arrayCurrentObj.getX() != 130){
-            arrayCurrentObj.setX(arrayCurrentObj.getX()-40);
+        if(arrayMarker.getI() > 0){
+            arrayMarker.setI(arrayMarker.getI()-1);
         }
     }
 
     public void arrayCurrentUp(){
-        if(arrayCurrentObj.getY() != 100){
-            arrayCurrentObj.setY(arrayCurrentObj.getY() - 40);
+        if(arrayMarker.getJ() > 0){
+            arrayMarker.setJ(arrayMarker.getJ()-1);
         }
     }
 
     public void arrayCurrentDown(){
-        if(arrayCurrentObj.getY() != 380){
-            arrayCurrentObj.setY(arrayCurrentObj.getY()+40);
+        if(arrayMarker.getJ() < circleArray[0].length-1){
+            arrayMarker.setJ(arrayMarker.getJ()+1);
         }
     }
 
@@ -273,21 +250,6 @@ public class ProgramController {
 
     public void changeBack(){
         currentListTriangle.setB(0);
-    }
-
-    public void squareArrayRight() {
-    }
-
-    public void squareArrayLeft() {
-
-    }
-
-    public void squareArrayUp() {
-
-    }
-
-    public void squareArrayDown() {
-
     }
 
     /**
